@@ -7,11 +7,22 @@ router.get('/', function(req, res) {
     res.send('Hello World');
 });
 
+router.get('/loggedOut', function(req, res) {
+    res.send('You have been logged out');
+})
+
 router.route('/login')
     .get(function(req, res) {
         res.send("Post to login.");
     })
     .post(auth.loginMidware('/', '/login'));
+
+router.get('/logout', function(req, res) {
+    req.session.destroy(function(err) {
+        if (err) throw err;
+        res.redirect('/loggedOut');
+    });
+})
 
 router.post('/signUp', function(req, res) {
     sling.createUser(req.body, function(err) {
