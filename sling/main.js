@@ -24,7 +24,6 @@ function createUser(data, callback) {
         .catch(function(err) {
             callback(err);
         });
-
 }
 
 module.exports.createUser = createUser;
