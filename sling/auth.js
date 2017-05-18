@@ -8,24 +8,27 @@
      var users = mongoose.model('Users');
      passport.use(new LocalStrategy(
          function(username, password, done) {
-             User.findOne({ username: username }, function(err, user) {
+             users.findOne({ username: username }, function(err, user) {
                  if (err) { return done(err); }
                  if (!user) {
                      return done(null, false, { message: 'Incorrect username.' });
                  }
-                 if (compare(password, user.password)) {
+                 if (comparePass(password, user.password)) {
+                     return done(null, user);
+                 } else {
                      return done(null, false, { message: 'Incorrect password.' });
                  }
-                 return done(null, user);
+
              });
-         }
-     ));
+         }));
 
      passport.serializeUser(function(user, done) {
+         console.log("Serialized User");
          done(null, user.id);
      });
 
      passport.deserializeUser(function(id, done) {
+         console.log("DeSerialized User");
          users.findById(id, function(err, user) {
              if (err) done(err);
              if (user) {
@@ -45,14 +48,21 @@
      eapp.use(passport.session());
  }
 
- function comparePass(pass, hash) {
-     return bcrypt.compareSync(pass, hash);
- }
-
  function genHash(pass) {
      return bcrypt.hashSync(pass, 10);
  }
 
+ function comparePass(pass, hash) {
+     return bcrypt.compareSync(pass, hash);
+ }
+
+ function loginMidware(success, failure) {
+     return passport.authenticate('local', {
+         successRedirect: success,
+         failureRedirect: failure
+     });
+ }
+ module.exports.loginMidware = loginMidware;
  module.exports.addMidware = authmid;
  module.exports.initStrategy = initStrategy;
 
