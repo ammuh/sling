@@ -1,8 +1,10 @@
  var passport = require('passport');
+ var LocalStrategy = require('passport-local').Strategy;
+ var mongoose = require('mongoose');
+ var session = require('express-session');
+ var bcrypt = require('bcrypt');
 
  function initStrategy() {
-     var LocalStrategy = require('passport-local').Strategy;
-     var mongoose = require('mongoose');
      var users = mongoose.model('Users');
      passport.use(new LocalStrategy(
          function(username, password, done) {
@@ -11,7 +13,7 @@
                  if (!user) {
                      return done(null, false, { message: 'Incorrect username.' });
                  }
-                 if (!user.validPassword(password)) {
+                 if (compare(password, user.password)) {
                      return done(null, false, { message: 'Incorrect password.' });
                  }
                  return done(null, user);
@@ -36,7 +38,6 @@
  }
 
  function authmid(eapp) {
-     var session = require('express-session');
      eapp.use(session({
          secret: process.env.SESSION_SECRET
      }));
@@ -44,5 +45,17 @@
      eapp.use(passport.session());
  }
 
+ function comparePass(pass, hash) {
+     return bcrypt.compareSync(pass, hash);
+ }
+
+ function genHash(pass) {
+     return bcrypt.hashSync(pass, 10);
+ }
+
  module.exports.addMidware = authmid;
  module.exports.initStrategy = initStrategy;
+
+ module.exports.comparePass = comparePass;
+
+ module.exports.genHash = genHash;
