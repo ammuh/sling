@@ -8,8 +8,18 @@ var bodyParser = require('body-parser');
 var app = express();
 var models = require('./models/models');
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+var exphbs = require('express-handlebars');
+var hbs = exphbs.create({
+    defaultLayout: false,
+    partialsDir: "views/partials",
+    ext: '.hbs'
+});
+
+app.engine('hbs', hbs.engine);
 app.set('view engine', 'hbs');
+
+//app.set('views', path.join(__dirname, 'views'));
+//app.set('views', path.join(__dirname, 'views'));
 
 // uncomment after plcallacing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -41,7 +51,9 @@ app.use(function(err, req, res, next) {
 
     // render the error page
     res.status(err.status || 500);
-    res.render('error');
+    console.log(err);
+    console.log(err.message);
+    res.send(err);
 });
 
 module.exports = app;

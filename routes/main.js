@@ -13,7 +13,8 @@ router.get('/loggedOut', function(req, res) {
 
 router.route('/login')
     .get(function(req, res) {
-        res.send("Post to login.");
+        console.log("Login reached");
+        res.render('login');
     })
     .post(auth.loginMidware('/', '/login'));
 

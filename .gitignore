@@ -1,4 +1,7 @@
 node_modules/*
 run
-setvars
-unsetvars
+bower_components/*
+UIDev/*
+.idea/*
+staticserver.js
+public/*
