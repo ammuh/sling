@@ -23,7 +23,7 @@ router.get('/logout', function(req, res) {
         if (err) throw err;
         res.redirect('/loggedOut');
     });
-})
+});
 
 router.post('/signUp', function(req, res) {
     sling.createUser(req.body, function(err) {
@@ -38,6 +38,14 @@ router.post('/signUp', function(req, res) {
             });
         }
     });
+});
+
+router.get('/products', function(req, res) {
+    // TODO: get list of products
+});
+
+router.get('', function (req, res) {
+
 });
 
 module.exports = router;
